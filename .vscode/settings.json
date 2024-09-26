@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "shapes.h": "c"
+        "shapes.h": "c",
+        "stdlib.h": "c",
+        "xlib.h": "c",
+        "keysym.h": "c"
     }
 }
