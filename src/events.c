@@ -1,24 +1,23 @@
-#include "events.h"
-#include "circle.h"
 #include <X11/keysym.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "shapes.h"
+#include "events.h"
 
-void handleExpose(Display *display, Window window, GC gc, Circle *circles, int circle_count) {
-    drawCircles(display, window, gc, circles, circle_count);
+Shape shapes[100];  // Масив для збереження фігур
+int shape_count = 0;  // Лічильник фігур
+ShapeType current_shape = CIRCLE;
+
+void handleExpose(Display *display, Window window, GC gc, Shape *shapes, int shape_count) {
+    drawShapes(display, window, gc, shapes, shape_count);  // Перемальовуємо всі фігури
 }
 
-void handleKeyPress(Display *display, XKeyEvent *event, unsigned long *current_color, Circle *circles, int *circle_count, Window window, GC gc) {
+void handleKeyPress(Display *display, XKeyEvent *event, unsigned long *current_color, 
+                    Shape *shapes, int *shape_count, Window window, GC gc) {
     KeySym key = XLookupKeysym(event, 0);
 
-    if (key == XK_s) {
-        saveCircles(circles, *circle_count, "circles.dat");
-    } else if (key == XK_l) {
-        *circle_count = loadCircles(circles, 100, "circles.dat");
-        XClearWindow(display, window);  // Очищення екрану перед перемальовуванням
-        drawCircles(display, window, gc, circles, *circle_count);  // Перемальовування кіл
-    } else if (key == XK_r) {
+    if (key == XK_r) {
         *current_color = 0xFF0000;  // Червоний
     } else if (key == XK_g) {
         *current_color = 0x00FF00;  // Зелений
@@ -30,26 +29,37 @@ void handleKeyPress(Display *display, XKeyEvent *event, unsigned long *current_c
         *current_color = WhitePixel(display, DefaultScreen(display));  // Білий
     } else if (key == XK_c) {
         XClearWindow(display, window);  // Очищення вікна
-        *circle_count = 0;  // Очищаємо збережені кола
+        *shape_count = 0;  // Очищаємо збережені фігури
     }
 }
 
-void handleFileOperations(Circle *circles, int *circle_count) {
-    saveCircles(circles, *circle_count, "circle.dat");
-    *circle_count = loadCircles(circles, 100, "circle.dat");
-}
+void handleButtonPress(Display *display, Window window, GC gc, Shape *shapes, 
+                       int *shape_count, XButtonEvent *event, unsigned long current_color) {
+    // Вибір фігури за допомогою колесика миші
+    if (event->button == Button4) {  // Колесико вверх
+        current_shape = (current_shape + 1) % 3;  // Перемикання між 0, 1, 2
+    } else if (event->button == Button5) {  // Колесико вниз
+        current_shape = (current_shape - 1 + 3) % 3;  // Перемикання між 0, 1, 2
+    }
 
+    // Малювання фігури лівою кнопкою миші
+    if (event->button == Button1) {
+        int width = 50, height = 50;  // Ширина та висота для фігур
+        if (current_shape == CIRCLE) {
+            addShape(shapes, shape_count, event->x, event->y, current_color, CIRCLE, width, height);
+        } else if (current_shape == RECTANGLE) {
+            addShape(shapes, shape_count, event->x, event->y, current_color, RECTANGLE, width, height);
+        } else if (current_shape == ELLIPSE) {
+            addShape(shapes, shape_count, event->x, event->y, current_color, ELLIPSE, width, height);
+        }
 
-void handleButtonPress(Display *display, Window window, GC gc, Circle *circles, int *circle_count, XButtonEvent *event, unsigned long current_color) {
-    if (event->button == Button1 && *circle_count < 100) {
-        XSetForeground(display, gc, current_color);
-        XDrawArc(display, window, gc, event->x - 25, event->y - 25, 50, 50, 0, 360 * 64);
-
-        addCircle(circles, circle_count, event->x, event->y, current_color);
+        // Малювання всіх фігур після додавання нової
+        drawShapes(display, window, gc, shapes, *shape_count);
     }
 }
 
-void handleMotionNotify(Display *display, Window window, GC gc, XMotionEvent *event, char *coord_str, int *last_x, int *last_y, Circle *circles, int circle_count) {
+void handleMotionNotify(Display *display, Window window, GC gc, XMotionEvent *event, 
+                        char *coord_str, int *last_x, int *last_y, Shape *shapes, int shape_count) {
     XSetForeground(display, gc, WhitePixel(display, DefaultScreen(display)));
     XFillRectangle(display, window, gc, *last_x, *last_y - 10, 100, 20);  // Очищаємо область для нового тексту
 
@@ -60,5 +70,5 @@ void handleMotionNotify(Display *display, Window window, GC gc, XMotionEvent *ev
     *last_x = event->x;
     *last_y = event->y;
 
-    drawCircles(display, window, gc, circles, circle_count);  // Перемальовуємо всі збережені кола
+    drawShapes(display, window, gc, shapes, shape_count);
 }

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "circle.h"
+#include "shapes.h"  // Включаємо заголовок shapes.h
 #include "events.h"
 
 int main() {
@@ -12,12 +12,13 @@ int main() {
     int screen;
     char coord_str[50];
     int last_x = 0, last_y = 0;
-    Circle circles[100];
-    int circle_count = 0;
+
+    Shape shapes[100];  // Масив фігур
+    int shape_count = 0;  // Лічильник фігур
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        fprintf(stderr, "He вдається відкрити дисплей\n");
+        fprintf(stderr, "Не вдається відкрити дисплей\n");
         exit(1);
     }
 
@@ -35,19 +36,19 @@ int main() {
         XNextEvent(display, &event);
 
         if (event.type == Expose) {
-            handleExpose(display, window, gc, circles, circle_count);
+            handleExpose(display, window, gc, shapes, shape_count);
         }
 
         if (event.type == KeyPress) {
-            handleKeyPress(display, &event.xkey, &current_color, circles, &circle_count, window, gc);
+            handleKeyPress(display, &event.xkey, &current_color, shapes, &shape_count, window, gc);
         }
 
         if (event.type == ButtonPress) {
-            handleButtonPress(display, window, gc, circles, &circle_count, &event.xbutton, current_color);
+            handleButtonPress(display, window, gc, shapes, &shape_count, &event.xbutton, current_color);
         }
 
         if (event.type == MotionNotify) {
-            handleMotionNotify(display, window, gc, &event.xmotion, coord_str, &last_x, &last_y, circles, circle_count);
+            handleMotionNotify(display, window, gc, &event.xmotion, coord_str, &last_x, &last_y, shapes, shape_count);
         }
     }
 
