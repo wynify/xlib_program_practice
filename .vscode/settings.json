@@ -3,6 +3,10 @@
         "shapes.h": "c",
         "stdlib.h": "c",
         "xlib.h": "c",
-        "keysym.h": "c"
+        "keysym.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "circle.h": "c",
+        "events.h": "c"
     }
 }
