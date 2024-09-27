@@ -1,4 +1,5 @@
 #include "shapes.h"
+#include <stdio.h>
 #include <X11/Xlib.h>
 
 int is_filled = 0;

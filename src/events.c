@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "shapes.h"
 #include "events.h"
 
@@ -32,6 +33,14 @@ void handleKeyPress(Display *display, XKeyEvent *event, unsigned long *current_c
         *shape_count = 0;  // Очищаємо збережені фігури
     } else if (key == XK_f) {
         is_filled = !is_filled;
+    } 
+
+    if (key == XK_s) {
+        saveShapes(shapes, *shape_count, "shapes.dat");
+    } else if (key == XK_l) {
+        *shape_count = loadShapes(shapes, 100, "shapes.dat");
+        XClearWindow(display, window);  // Очищаємо вікно перед перемальовуванням
+        handleExpose(display, window, gc, shapes, *shape_count);
     }
 }
 
