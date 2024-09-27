@@ -65,7 +65,7 @@ void drawCurrentShapeName(Display *display, Window window, GC gc, ShapeType shap
     switch(shape_type){
         case CIRCLE: shape_name = "<Circle>"; break;
         case RECTANGLE: shape_name = "<Rectangle>"; break;
-        case ELLIPSE: shape_name = "<Ellipse>"; break;
+        case TRIANGLE: shape_name = "<Ellipse>"; break;
         default: shape_name = "<Unknown>"; break;
     }
 
@@ -92,8 +92,8 @@ void handleButtonPress(Display *display, Window window, GC gc, Shape *shapes,
         strcpy(shape_info, "<Circle>");
     } else if (current_shape == RECTANGLE) {
         strcpy(shape_info, "<Rectangle>");
-    } else if (current_shape == ELLIPSE) {
-        strcpy(shape_info, "<Ellipse>");
+    } else if (current_shape == TRIANGLE) {
+        strcpy(shape_info, "<Triangle>");
     }
 
     // Малювання фігури лівою кнопкою миші
@@ -104,8 +104,8 @@ void handleButtonPress(Display *display, Window window, GC gc, Shape *shapes,
             addShape(shapes, shape_count, event->x, event->y, current_color, CIRCLE, width, height);
         } else if (current_shape == RECTANGLE) {
             addShape(shapes, shape_count, event->x, event->y, current_color, RECTANGLE, width, height);
-        } else if (current_shape == ELLIPSE) {
-            addShape(shapes, shape_count, event->x, event->y, current_color, ELLIPSE, width, height);
+        } else if (current_shape == TRIANGLE) {
+            addShape(shapes, shape_count, event->x, event->y, current_color, TRIANGLE, width, height);
         }
 
         //Printing text about shape type:

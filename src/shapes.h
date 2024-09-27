@@ -7,7 +7,7 @@
 typedef enum {
     CIRCLE,
     RECTANGLE,
-    ELLIPSE
+    TRIANGLE
 } ShapeType;
 
 typedef struct {
@@ -15,7 +15,10 @@ typedef struct {
     unsigned long color; // Колір
     ShapeType type;      // Тип фігури
     int width, height;   // Розміри
+    int base;
 } Shape;
+
+
 
 extern int is_filled;  
 
