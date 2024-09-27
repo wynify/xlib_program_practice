@@ -30,7 +30,30 @@ void handleKeyPress(Display *display, XKeyEvent *event, unsigned long *current_c
     } else if (key == XK_c) {
         XClearWindow(display, window);  // Очищення вікна
         *shape_count = 0;  // Очищаємо збережені фігури
+    } else if (key == XK_f) {
+        is_filled = !is_filled;
     }
+}
+
+void drawCurrentShapeName(Display *display, Window window, GC gc, ShapeType shape_type){
+    char *shape_name;
+
+    switch(shape_type){
+        case CIRCLE:
+            shape_name = "<Circle>";
+            break;
+        case RECTANGLE:
+            shape_name = "<Rectangle>";
+            break;
+        case ELLIPSE:
+            shape_name = "<Ellipse>";
+            break;
+        default:
+            shape_name = "<Uknown>";
+    }
+
+    XSetForeground(display, gc, WhitePixel(display, DefaultScreen(display)));
+    XDrawString(display, window, gc, 10, 20, shape_name, strlen(shape_name));
 }
 
 void handleButtonPress(Display *display, Window window, GC gc, Shape *shapes, 
@@ -39,12 +62,27 @@ void handleButtonPress(Display *display, Window window, GC gc, Shape *shapes,
     if (event->button == Button4) {  // Колесико вверх
         current_shape = (current_shape + 1) % 3;  // Перемикання між 0, 1, 2
     } else if (event->button == Button5) {  // Колесико вниз
-        current_shape = (current_shape - 1 + 3) % 3;  // Перемикання між 0, 1, 2
+        current_shape   = (current_shape - 1 + 3) % 3;  // Перемикання між 0, 1, 2
+    }
+
+    XSetForeground(display, gc, WhitePixel(display, DefaultScreen(display)));
+    XFillRectangle(display, window, gc, 0, 0, 200, 30);
+
+    drawShapes(display, window, gc, shapes, *shape_count);
+
+    char shape_info[50];
+    if (current_shape == CIRCLE) {
+        strcpy(shape_info, "<Circle>");
+    } else if (current_shape == RECTANGLE) {
+        strcpy(shape_info, "<Rectangle>");
+    } else if (current_shape == ELLIPSE) {
+        strcpy(shape_info, "<Ellipse>");
     }
 
     // Малювання фігури лівою кнопкою миші
     if (event->button == Button1) {
-        int width = 50, height = 50;  // Ширина та висота для фігур
+        int width = 100, height = 100;  // Ширина та висота для фігур
+
         if (current_shape == CIRCLE) {
             addShape(shapes, shape_count, event->x, event->y, current_color, CIRCLE, width, height);
         } else if (current_shape == RECTANGLE) {
@@ -53,10 +91,16 @@ void handleButtonPress(Display *display, Window window, GC gc, Shape *shapes,
             addShape(shapes, shape_count, event->x, event->y, current_color, ELLIPSE, width, height);
         }
 
+        //Printing text about shape type:
+        XSetForeground(display, gc, BlackPixel(display, DefaultScreen(display)));
+        XDrawString(display, window, gc, 10, 20, shape_info, strlen(shape_info));
+
         // Малювання всіх фігур після додавання нової
         drawShapes(display, window, gc, shapes, *shape_count);
     }
 }
+
+
 
 void handleMotionNotify(Display *display, Window window, GC gc, XMotionEvent *event, 
                         char *coord_str, int *last_x, int *last_y, Shape *shapes, int shape_count) {

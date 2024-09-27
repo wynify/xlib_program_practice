@@ -18,7 +18,7 @@ int main() {
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        fprintf(stderr, "Не вдається відкрити дисплей\n");
+        fprintf(stderr, "Can't open window\n");
         exit(1);
     }
 

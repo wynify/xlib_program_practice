@@ -17,6 +17,8 @@ typedef struct {
     int width, height;   // Розміри
 } Shape;
 
+extern int is_filled; 
+
 void drawShapes(Display *display, Window window, GC gc, Shape *shapes, int shape_count);
 void addShape(Shape *shapes, int *shape_count, int x, int y, unsigned long color, ShapeType type, int width, int height);
 
