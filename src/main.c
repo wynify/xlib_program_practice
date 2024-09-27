@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shapes.h"  // Включаємо заголовок shapes.h
 #include "events.h"
+#include "shapes.h"  
+
 
 int main() {
     Display *display;

@@ -7,6 +7,7 @@
         "stdio.h": "c",
         "string.h": "c",
         "circle.h": "c",
-        "events.h": "c"
+        "events.h": "c",
+        "select_color.h": "c"
     }
 }

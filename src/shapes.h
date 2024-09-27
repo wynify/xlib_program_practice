@@ -25,7 +25,7 @@ void drawShape(Display *display, Window window, GC gc, Shape shape);
 void addShape(Shape *shapes, int *shape_count, int x, int y, unsigned long color, ShapeType type, int width, int height);
 
 void saveShapes(Shape *shapes, int shape_count, const char *filename);
-int loadShapes(Shape *shapes, int max_shapes, const char *filename);
+int  loadShapes(Shape *shapes, int max_shapes, const char *filename);
 
 
 #endif // SHAPES_H
